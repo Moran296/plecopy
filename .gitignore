@@ -1,0 +1,8 @@
+#.gitignore
+*.txt
+
+#python
+*.pyc
+*.pyo
+*.pyd
+*.whl
