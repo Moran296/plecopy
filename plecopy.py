@@ -1,7 +1,15 @@
 from collections import namedtuple
+import unicodedata
 import re
 
 Card = namedtuple("Card", "headword pronunciation definition")
+
+def print_with_hebrew(text, *args, **kwargs):
+    if type(text) == str and len(text) > 0:
+        if 'HEBREW' in unicodedata.name(text.strip()[0]):
+            text = "".join(text[-1::-1])
+
+    print(text, *args, **kwargs)
 
 class PlecoPy:
     def __init__(self):
@@ -27,7 +35,7 @@ class PlecoPy:
         for definition in card.definition:
             if only_short_def and len(definition.split()) > 3:
                 continue
-            print (f"\t* {definition}")
+            print_with_hebrew (f"{definition}")
 
     def present_category(self, category, only_short_def=True):
         if type(category) != dict:
@@ -36,8 +44,9 @@ class PlecoPy:
             if key == 'cards':
                 for card in category[key]:
                     self.present_card(card, only_short_def)
+                    print('\n')
             else:
-                print(f"Category: {key}")
+                print_with_hebrew(f"{key}")
                 self.present_category(value, only_short_def)
 
     def present_all(self, only_short_def=True):
@@ -70,4 +79,4 @@ class PlecoPy:
 
 p = PlecoPy()
 p.parse_txt_file('pleco_tayarut.txt')
-p.present_all()
+p.present_all(only_short_def=False)
